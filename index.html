@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Just Between Us</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap');
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #1F2A33;
+    font-family: 'Inter', sans-serif;
+  }
+  #app {
+    --ink: #1F2A33;
+    --paper: #EFE9DA;
+    --mustard: #E3B23C;
+    --mustard-deep: #C4922A;
+    color: var(--paper);
+    background: var(--ink);
+    height: 100vh;
+    display: flex;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .screen { flex: 1; display: flex; }
+
+  #gate {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    gap: 18px;
+    text-align: center;
+  }
+  #gate h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 30px;
+    margin: 0;
+  }
+  #gate p {
+    margin: 0;
+    color: rgba(239,233,218,0.65);
+    font-size: 14px;
+    max-width: 320px;
+    line-height: 1.5;
+  }
+  #gate-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 280px;
+    margin-top: 6px;
+  }
+  #gate input {
+    background: rgba(239,233,218,0.08);
+    border: 1px solid rgba(239,233,218,0.25);
+    border-radius: 8px;
+    padding: 11px 13px;
+    color: var(--paper);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+  }
+  #gate input:focus { border-color: var(--mustard); }
+  #gate input::placeholder { color: rgba(239,233,218,0.4); }
+  #gate button {
+    background: var(--mustard);
+    color: var(--ink);
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  #gate button:hover { background: var(--mustard-deep); }
+  .err { color: #e88; font-size: 13px; min-height: 16px; }
+
+  .chat { flex-direction: column; min-height: 0; }
+  .chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(239,233,218,0.12);
+    background: rgba(0,0,0,0.1);
+  }
+  .chat-header .room {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 17px;
+    display: flex;
+    flex-direction: column;
+  }
+  .chat-header .sub {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 11px;
+    color: rgba(239,233,218,0.5);
+    margin-top: 2px;
+  }
+  .chat-header button {
+    background: none;
+    border: 1px solid rgba(239,233,218,0.25);
+    color: rgba(239,233,218,0.7);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .chat-header button:hover { border-color: var(--mustard); color: var(--paper); }
+
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .empty {
+    margin: auto;
+    text-align: center;
+    color: rgba(239,233,218,0.4);
+    font-size: 13px;
+    max-width: 220px;
+    line-height: 1.5;
+  }
+
+  .bubble-row { display: flex; }
+  .bubble-row.mine { justify-content: flex-end; }
+  .bubble {
+    max-width: 72%;
+    padding: 9px 13px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.45;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .bubble-row.mine .bubble { background: var(--mustard); }
+  .bubble .meta {
+    display: block;
+    font-size: 10.5px;
+    color: rgba(31,42,51,0.5);
+    margin-bottom: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .bubble .time {
+    display: block;
+    font-size: 10px;
+    color: rgba(31,42,51,0.45);
+    margin-top: 4px;
+    text-align: right;
+  }
+
+  .composer {
+    display: flex;
+    gap: 8px;
+    padding: 14px 16px;
+    border-top: 1px solid rgba(239,233,218,0.12);
+    background: rgba(0,0,0,0.1);
+  }
+  .composer input {
+    flex: 1;
+    background: rgba(239,233,218,0.08);
+    border: 1px solid rgba(239,233,218,0.2);
+    border-radius: 20px;
+    padding: 10px 16px;
+    color: var(--paper);
+    font-size: 14px;
+    outline: none;
+  }
+  .composer input:focus { border-color: var(--mustard); }
+  .composer button {
+    background: var(--mustard);
+    color: var(--ink);
+    border: none;
+    border-radius: 20px;
+    padding: 0 18px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .composer button:disabled { opacity: 0.5; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="gate" class="screen">
+    <h1>Just Between Us</h1>
+    <p>Pick a room code and share it only with your friend — anyone who enters the same code sees the same messages.</p>
+    <form id="gate-form">
+      <input id="room-input" placeholder="Room code (e.g. blue-fox-42)" autocomplete="off" />
+      <input id="name-input" placeholder="Your name" autocomplete="off" />
+      <div id="gate-err" class="err"></div>
+      <button type="submit">Enter room</button>
+    </form>
+  </div>
+
+  <div id="chat" class="screen chat" style="display:none;">
+    <div class="chat-header">
+      <div class="room">
+        <span id="room-label"></span>
+        <span class="sub">you're <span id="name-label"></span></span>
+      </div>
+      <button id="leave-btn">Leave</button>
+    </div>
+    <div class="messages" id="messages">
+      <div class="empty" id="empty-msg">No messages yet. Say hi.</div>
+    </div>
+    <form class="composer" id="composer">
+      <input id="draft-input" placeholder="Type a message…" autocomplete="off" />
+      <button type="submit" id="send-btn">Send</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- FIREBASE SETUP: paste your config below, see instructions    -->
+<!-- Claude gave you alongside this file.                         -->
+<!-- ============================================================ -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getDatabase, ref, push, onChildAdded, query, limitToLast
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD25L2KAC3lbDvIbDvk9v3zE8izqtl9M94",
+    authDomain: "friend-chat-360f7.firebaseapp.com",
+    databaseURL: "https://friend-chat-360f7-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "friend-chat-360f7",
+    storageBucket: "friend-chat-360f7.firebasestorage.app",
+    messagingSenderId: "343279129480",
+    appId: "1:343279129480:web:c0ea62d83a22fa9554603d"
+  };
+
+  let db, room, name;
+
+  const gateEl = document.getElementById('gate');
+  const chatEl = document.getElementById('chat');
+  const gateForm = document.getElementById('gate-form');
+  const roomInput = document.getElementById('room-input');
+  const nameInput = document.getElementById('name-input');
+  const gateErr = document.getElementById('gate-err');
+  const roomLabel = document.getElementById('room-label');
+  const nameLabel = document.getElementById('name-label');
+  const messagesEl = document.getElementById('messages');
+  const emptyMsg = document.getElementById('empty-msg');
+  const composer = document.getElementById('composer');
+  const draftInput = document.getElementById('draft-input');
+  const sendBtn = document.getElementById('send-btn');
+  const leaveBtn = document.getElementById('leave-btn');
+
+  function formatTime(ts) {
+    return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+  function addBubble(msg) {
+    if (emptyMsg.parentNode) emptyMsg.remove();
+    const mine = msg.sender === name;
+    const row = document.createElement('div');
+    row.className = 'bubble-row' + (mine ? ' mine' : '');
+    row.innerHTML = `
+      <div class="bubble">
+        <span class="meta">${escapeHtml(msg.sender)}</span>
+        ${escapeHtml(msg.text)}
+        <span class="time">${formatTime(msg.time)}</span>
+      </div>`;
+    messagesEl.appendChild(row);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  gateForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const roomVal = roomInput.value.trim();
+    const nameVal = nameInput.value.trim();
+    if (!roomVal || !nameVal) {
+      gateErr.textContent = 'Fill in both a room code and your name.';
+      return;
+    }
+    if (firebaseConfig.apiKey === "PASTE_ME") {
+      gateErr.textContent = 'This app needs Firebase set up first — see the setup steps.';
+      return;
+    }
+    room = roomVal.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+    name = nameVal;
+
+    try {
+      const app = initializeApp(firebaseConfig);
+      db = getDatabase(app);
+    } catch (err) {
+      gateErr.textContent = 'Could not connect — check your Firebase config.';
+      return;
+    }
+
+    roomLabel.textContent = room;
+    nameLabel.textContent = name;
+    gateEl.style.display = 'none';
+    chatEl.style.display = 'flex';
+
+    const roomRef = query(ref(db, 'rooms/' + room), limitToLast(300));
+    onChildAdded(roomRef, (snapshot) => addBubble(snapshot.val()));
+  });
+
+  composer.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const text = draftInput.value.trim();
+    if (!text || !db) return;
+    sendBtn.disabled = true;
+    draftInput.value = '';
+    push(ref(db, 'rooms/' + room), {
+      sender: name,
+      text: text,
+      time: Date.now()
+    }).finally(() => {
+      sendBtn.disabled = false;
+      draftInput.focus();
+    });
+  });
+
+  leaveBtn.addEventListener('click', function () {
+    location.reload();
+  });
+</script>
+</body>
+</html>
